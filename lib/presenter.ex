@@ -4,7 +4,8 @@ defmodule Presenter do
   protocol implementation for any module that defines a struct.
   """
 
-  @type attribute
+  @type attribute :: atom | {atom, function}
+  @type attributes :: [attribute]
 
   @doc false
   defmacro __using__(_) do
@@ -13,7 +14,7 @@ defmodule Presenter do
     end
   end
 
-  @spec attributes([atom | {atom, function}]) :: Macro.t
+  @spec attributes(attributes) :: Macro.t
   defmacro attributes(attributes \\ []) do
     quote do
       defimpl Presentable, for: __MODULE__ do
@@ -31,7 +32,7 @@ defmodule Presenter do
         defp prepare(model, []), do: Map.keys(model) |> List.delete(:__struct__)
         defp prepare(model, attributes), do: Enum.uniq_by(attributes, &attr_name/1)
 
-        @spec attr_name(atom | {atom, function}) :: atom
+        @spec attr_name(Presenter.attribute) :: atom
         defp attr_name({name, _}), do: name
         defp attr_name(name), do: name
 
