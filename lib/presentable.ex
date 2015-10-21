@@ -1,5 +1,12 @@
 defprotocol Presentable do
-  @doc "Returns a 'presentable' data object for client rendering."
+  @moduledoc """
+  Defines a protocol meant to take complex data structures and present them as
+  simple data types. I personally find it very useful for converting custom
+  structs to maps. Very good when you need to encode/decode messages between a
+  client connection.
+  """
+
+  @doc "Returns a 'presentable' data object."
   @fallback_to_any true
   def present(model)
 end
@@ -13,25 +20,22 @@ defimpl Presentable, for: List do
     Enum.map(list, &nested/1)
   end
 
-  defp nested({key, val}) do
-    {key, Presentable.present(val)}
-  end
-
+  defp nested({key, val}), do: {key, Presentable.present(val)}
   defp nested(val), do: Presentable.present(val)
 end
 
 defimpl Presentable, for: Map do
   @doc "Present each element of the map, retaining the original key."
   def present(map) do
-    Enum.into(map, %{}, fn({k, v}) ->
-      {k, Presentable.present(v)}
-    end)
+    Enum.into(map, %{}, &present_value/1)
   end
+
+  defp present_value({key, val}), do: {key, Presentable.present(val)}
 end
 
 defimpl Presentable, for: Any do
   @doc """
-  Returns the data as-is.
+  Fallback case: return the data as-is.
   """
   def present(data), do: data
 end
