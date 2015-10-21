@@ -1,6 +1,10 @@
 defmodule PresentexTest do
   use ExUnit.Case
 
+  defmodule ImplicitPresentable do
+    defstruct [one: "swamp", two: 10, three: "thing"]
+  end
+
   defmodule ImplicitAttrs do
     use Presenter
     defstruct [one: "swamp", two: 10, three: "thing"]
@@ -17,6 +21,10 @@ defmodule PresentexTest do
     use Presenter
     defstruct [one: "swamp", two: 10, three: "thing"]
     attributes [{:one, fn(x) -> String.length(x) end}, {:two, fn(x) -> x * x end}, :three]
+  end
+
+  test "presentable works with structures" do
+    %{one: "swamp", two: 10, three: "thing"} = Presentable.present(%ImplicitPresentable{})
   end
 
   test "works with implicit attribute list" do
