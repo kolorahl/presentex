@@ -3,6 +3,10 @@
 A "Presenter" package for Elixir. Convert structures to maps for easy
 encoding/decoding.
 
+## Status
+
+[![Build Status](https://semaphoreci.com/api/v1/projects/9fb81c3d-de1f-40bb-b851-06949485d836/577955/badge.svg)](https://semaphoreci.com/kolorahl/presentex)
+
 ## What is a Presenter?
 
 A *presenter* is some code that helps present your data structures to other bits
