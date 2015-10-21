@@ -4,13 +4,6 @@ defprotocol Presentable do
   def present(model)
 end
 
-defimpl Presentable, for: PID do
-  @doc "Assumes a GenServer PID. Presents the process state, if accessible."
-  def present(pid) do
-    Presentable.present(GenServer.call(pid, :state))
-  end
-end
-
 defimpl Presentable, for: List do
   @doc """
   Presents each individual element. In the case of a keyword list, presents each
