@@ -58,6 +58,8 @@ defimpl Presentable, for: Any do
   Fallback case: return the data as-is, except for structs. For structs, remove
   the `__struct__` key and return the bare map.
   """
-  def present(%{__struct__: _}=data), do: Map.delete(data, :__struct__)
+  def present(%{__struct__: _}=data) do
+    Presentable.present(Map.delete(data, :__struct__))
+  end
   def present(data), do: data
 end
