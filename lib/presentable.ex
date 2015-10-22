@@ -33,6 +33,26 @@ defimpl Presentable, for: Map do
   defp present_value({key, val}), do: {key, Presentable.present(val)}
 end
 
+defimpl Presentable, for: Tuple do
+  @doc "Present each element of the tuple."
+  def present(tuple) do
+    present_each(tuple, 0, tuple_size(tuple))
+  end
+
+  # We are ok with this from a performance perspective because:
+  # Tuples store elements contiguously in memory. This means accessing a tuple
+  # element per index or getting the tuple size is a fast operation
+  # => http://elixir-lang.org/getting-started/basic-types.html#tuples
+  defp present_each(tuple, size, size) do
+    tuple
+  end
+  defp present_each(tuple, index, size) do
+    value = Presentable.present(elem(tuple, index))
+    tuple = put_elem(tuple, index, value)
+    present_each(tuple, index + 1, size)
+  end
+end
+
 defimpl Presentable, for: Any do
   @doc """
   Fallback case: return the data as-is, except for structs. For structs, remove
